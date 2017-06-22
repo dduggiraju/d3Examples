@@ -99,16 +99,34 @@
         var colorScale = d3.scaleLinear()
             .domain([0, maxImpact]).range(["white", "#990000"]);
         d3.select("#teweetScatterG").attr("style", "height: 490px; width: 600px;margin: 5px");
-        d3.select("#teweetScatterG")
-            .selectAll("circle")
-            .data(tweetData)
+
+        var tweetG = d3.select("#teweetScatterG")
+            .selectAll("g")
+            .data(tweetData, function (d) { return JSON.stringify(d); })
             .enter()
-            .append("circle")
+            .append("g")
+            .attr("transform", function (d) {
+                return "translate(" +
+                    timeRamp(d.tweetTime) + "," + (480 - yScale(d.impact))
+                    + ")";
+            });
+        tweetG.append("circle")
             .attr("r", function (d) { return radiusScale(d.impact); })
-            .attr("cx", function (d, i) { return timeRamp(d.tweetTime); })
-            .attr("cy", function (d) { return 480 - yScale(d.impact); })
-            .style("fill", function (d) { return colorScale(d.impact); })
+            .style("fill", "#990000")
             .style("stroke", "black")
             .style("stroke-width", "1px");
+        tweetG.append("text")
+            .text(function (d) { return d.user + "-" + d.tweetTime.getHours(); });            
+        var filteredData = tweetData.filter(
+            function (el) { return el.impact > 2 }
+        );
+        console.log(filteredData);
+        d3.select("#teweetScatterG").selectAll("circle")
+        .data(filteredData, function (d) { return JSON.stringify(d) })
+        .exit()
+        .style('fill', 'green');
+            // .data(filteredData, function (d) { return JSON.stringify(d) })
+            // .exit()
+            // .remove();
     }
 }());
