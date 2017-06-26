@@ -4,7 +4,7 @@
         d3.select("svg")
             .append("g")
             .attr("id", "teamsG")
-            .attr("transform", "translate(50,300)")
+            .attr("transform", "translate(50,250)")
             .selectAll("g")
             .data(incomingData)
             .enter()
@@ -24,34 +24,94 @@
             .transition()
             .duration(500)
             .attr("r", 20)
-            .style("fill", "pink")
+            // .style("fill", "pink")
             .style("stroke", "black")
             .style("stroke-width", "1px");
         teamG
             .append("text")
             .style("text-anchor", "middle")
             .attr("y", 30)
-            .style("font-size", "10px")
+            // .style("font-size", "10px")
             .text(function (d) {
                 return d.team;
             });
-        teamG
-            .on("mouseover", function (d) {
-                d3.selectAll("g.overallG").select("circle")
-                    .style("fill", function (p) {
-                        return p.region === d.region ? "red" : "gray";
-                    });
-                teamG.on("mouseout", function () {
-                    d3.selectAll("g.overallG").select("circle").style("fill", "pink");
+        teamG.insert("image", "text")
+            .attr("xlink:href", function (d) {
+                return "images/" + d.team + ".png";
+            })
+            .attr("width", "45px").attr("height", "20px").attr("x", "-22")
+            .attr("y", "-10");
+        d3.text("modal.html", function (data) {
+            d3.select("body").append("div").attr("id", "modal").html(data);
+        });
+        teamG.on("click", teamClick);
+        function teamClick(d) {
+            d3.selectAll("td.data").data(d3.values(d))
+                .html(function (p) {
+                    return p
                 });
+        };
+        function highlightRegion(d) {
+            d3.selectAll("g.overallG").select("circle")
+                .style("fill", function (p) {
+                    return p.region === d.region ? "red" : "gray";
+                });
+            teamG.on("mouseout", function () {
+                d3.selectAll("g.overallG").select("circle").style("fill", "pink");
             });
+        }
+        function highlightRegion2(d) {
+            d3.select(this).select("text").classed("active", true).attr("y", 10);
+            d3.selectAll("g.overallG").select("circle").each(function (p, i) {
+                p.region == d.region ?
+                    d3.select(this).classed("active", true) :
+                    d3.select(this).classed("inactive", true);
+            });
+            this.parentElement.appendChild(this);
+            teamG.on("mouseout", unHighlight)
+            function unHighlight() {
+                d3.selectAll("g.overallG").select("circle").attr("class", "");
+                d3.selectAll("g.overallG").select("text")
+                    .classed("active", false).attr("y", 30);
+            };
+        }
+        function highlightRegion3(d) {
+            var teamColor = d3.rgb("pink");
+            d3.select(this).select("text").classed("active", true).attr("y", 10);
+            d3.selectAll("g.overallG").select("circle").each(function (p, i) {
+                d3.select(this).style("fill", function (p) {
+                    return p.region == d.region ?
+                        teamColor.darker(0.75) : teamColor.brighter(0.5)
+                });
+                // d3.select(this).classed("active", true) :
+                // d3.select(this).classed("inactive", true);
+            });
+            this.parentElement.appendChild(this);
+            teamG.on("mouseout", unHighlight)
+            function unHighlight() {
+                d3.selectAll("g.overallG").select("circle").attr("class", "");
+                d3.selectAll("g.overallG").select("text")
+                    .classed("active", false).attr("y", 30);
+            };
+        }
+        teamG.on("mouseover", highlightRegion3);
+
         function buttonClick(datapoint) {
             var maxValue = d3.max(incomingData, function (d) {
                 return parseFloat(d[datapoint]);
             });
+            var ybRamp = d3.scaleLinear()
+                .interpolate(d3.interpolateLab)
+                .domain([0, maxValue]).range(["yellow", "blue"]);
             var radiusScale = d3.scaleLinear()
                 .domain([0, maxValue]).range([2, 20]);
+            var tenColorScale = d3.scaleOrdinal(d3.schemeCategory10)
+            //     ["UEFA", "CONMEBOL", "CAF", "AFC"]));
+
             d3.selectAll("g.overallG").select("circle").transition().duration(1000)
+                .style("fill", function (d) {
+                    return tenColorScale(d[datapoint]);
+                })
                 .attr("r", function (d) {
                     return radiusScale(d[datapoint]);
                 });
@@ -71,5 +131,9 @@
 
     d3.csv("worldcup.csv", function (data) {
         overallTeamViz(data);
+        d3.select("circle").each(function (d, i) {
+            console.log(d); console.log(i); console.log(this);
+        });
     });
+
 }());
