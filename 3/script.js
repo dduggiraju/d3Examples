@@ -35,12 +35,12 @@
             .text(function (d) {
                 return d.team;
             });
-        teamG.insert("image", "text")
-            .attr("xlink:href", function (d) {
-                return "images/" + d.team + ".png";
-            })
-            .attr("width", "45px").attr("height", "20px").attr("x", "-22")
-            .attr("y", "-10");
+        // teamG.insert("image", "text")
+        //     .attr("xlink:href", function (d) {
+        //         return "images/" + d.team + ".png";
+        //     })
+        //     .attr("width", "45px").attr("height", "20px").attr("x", "-22")
+        //     .attr("y", "-10");
         d3.text("modal.html", function (data) {
             d3.select("body").append("div").attr("id", "modal").html(data);
         });
@@ -51,6 +51,28 @@
                     return p
                 });
         };
+        d3.html("download.svg", loadSVG);
+        function loadSVG(svgData) {
+            // while (!d3.select(svgData).selectAll("path").empty()) {
+            //     d3.select("svg").node().appendChild(
+            //         d3.select(svgData).select("path").node());
+            // }
+            // d3.select(svgData).selectAll("path").each(function () {
+            //     d3.select("svg").node().appendChild(this);
+            // });
+            // d3.selectAll("path").attr("transform", "translate(50,50)");
+
+            d3.selectAll("g").each(function () {
+                var gParent = this;
+                d3.select(svgData).selectAll("path").each(function () {
+                    gParent.appendChild(this.cloneNode(true))
+                });
+            });
+            d3.selectAll("path").style("fill", "darkred")
+                .style("stroke", "black").style("stroke-width", "1px");
+                
+        }
+
         function highlightRegion(d) {
             d3.selectAll("g.overallG").select("circle")
                 .style("fill", function (p) {

@@ -1,0 +1,19 @@
+line {
+shape-rendering: crispEdges;
+stroke: #000;
+}
+path.domain {
+fill: none;
+stroke: black;
+}
+
+div.viz{
+    float: left; 
+    margin: 20px;
+}
+
+.viz svg {
+    width:550px;
+    height:550px;
+    border:1px lightgray solid;
+}
