@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title Page</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="../../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+</head>
+
+<body>
+    <h1 class="text-center">D3 Concepts</h1>
+    <svg>
+        <line x1="10" y1="10" x2="100" y2="100"></line>
+        <rect x='110' y='10' height='100' width='100'></rect>
+        <circle cx='270' cy='60' r='50'></circle>
+        <polygon points="360,5 310,110 410,110" />
+        <path d="M 120 120 L 220 220 C 200 70 480 290 320 120 Z" stroke="steelblue" fill="lightyellow" stroke-width="2"></path>
+   <text x='400' y="20" class="myText">Hello World!</text>
+    </svg>
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="../../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../node_modules/d3/build/d3.js" type="text/Javascript"></script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
